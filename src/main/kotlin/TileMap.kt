@@ -2,6 +2,8 @@ import generators.Dimension
 
 typealias Tile = Int
 
+// REVIEW efficiency of processing later, perhaps convert to an
+// instruction stack or render in a coroutine of some kind if possible.
 class TileMap(
     val height : Int,
     val width  : Int,
@@ -21,8 +23,8 @@ class TileMap(
     }
 
     operator fun set(x: Int, y: Int, w: Int, h: Int, tile: Tile) {
-        for (j in y until h)
-            for (i in x until w)
+        for (j in y until y + h)
+            for (i in x until x + w)
                 set(i, j, tile)
     }
 

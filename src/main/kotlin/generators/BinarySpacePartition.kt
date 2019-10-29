@@ -1,16 +1,21 @@
 package generators
 
 import Color
+import Percent
 import Tile
 import TileMap
+import i
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
+import pc
 import renderers.fillRect
 import kotlin.browser.document
 import kotlin.random.Random.Default.nextInt
 
-typealias SplitGroup =
-        ArrayList<BinarySpacePartition.Partition>
+typealias SplitGroup
+        = ArrayList<BinarySpacePartition.Partition>
+typealias Ignored
+        = Exception
 
 class BinarySpacePartition(
     private val depth  : Int,
@@ -26,9 +31,8 @@ class BinarySpacePartition(
             for (p in parts) {
                 fillStyle = !Color[nextInt(0xFFFFFF)]
                 fillRect(p.x, p.y, p.w, p.h)
-//                fillRect(p.centerX - 5, p.centerY - 5, 10, 10)
-                console.log(p)
-                p.makeRoom(tiles, 8, 20, this)
+                p.makeRoom(tiles, 10, nextInt(25, 75).pc)
+                // Generate hallways
             }
         }
 
@@ -52,10 +56,10 @@ class BinarySpacePartition(
         val w : Int,
         val h : Int
     ) {
-        val cornerX = x + w
-        val cornerY = y + h
-        val centerX = x + w / 2
-        val centerY = y + h / 2
+        private val cornerX = x + w
+        private val cornerY = y + h
+        private val centerX = x + w / 2
+        private val centerY = y + h / 2
 
         constructor(w: Int, h: Int) : this(0, 0, w, h)
 
@@ -68,16 +72,20 @@ class BinarySpacePartition(
                 Partition(x, y, w, split) and Partition(x, y + split, w, h - split)
         }
 
-        fun makeRoom(tiles: TileMap, padding: Int, minSize: Int, ctx: CanvasRenderingContext2D) = try {
-            val x = nextInt(x + padding, centerX - minSize)
-            val y = nextInt(y + padding, centerY - minSize)
-            val h = 50
-            val w = 50
-
-            ctx.fillStyle = !Color[0xFFFFFF]
-            ctx.fillRect(x, y, w, h)
-            tiles[x, y, w, h] = 1
-        } catch (e: IllegalArgumentException) {}
+        fun makeRoom(tiles: TileMap, padding: Int = 10, minSize: Percent = 50.pc): Unit = try {
+            if (w * minSize + padding * 2 < w &&
+                h * minSize + padding * 2 < h
+            ) {
+                val x = nextInt(x + padding, centerX)
+                val y = nextInt(y + padding, centerY)
+                val d = nextInt((w * minSize).i, cornerX - x - padding) by
+                        nextInt((h * minSize).i, cornerY - y - padding)
+                // Push region to tilemap
+                tiles[x, y, d] = 1
+            } else Unit
+        } catch (e: Ignored) {
+            makeRoom(tiles, padding, minSize)
+        }
 
         private fun paddedSplit(input: Int, padding: Int): Int {
             val top = input - padding

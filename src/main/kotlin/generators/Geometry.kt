@@ -33,8 +33,5 @@ class Line(
         get() = Dimension(abs(a.x - b.x), abs(a.y - b.y))
 }
 
-val Int.d: Dimension
-    get() = this by this
-
 infix fun Int.by(other: Int): Dimension =
     Dimension(this, other)

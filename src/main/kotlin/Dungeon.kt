@@ -3,6 +3,7 @@
 import generators.BinarySpacePartition
 import generators.Generator
 import org.w3c.dom.HTMLCanvasElement
+import renderers.CanvasPixelRenderer
 import renderers.Renderer
 import kotlin.browser.document
 import kotlin.browser.window
@@ -10,7 +11,7 @@ import kotlin.browser.window
 fun main() = println("Loaded Dungeon Kit!")
 
 @JsName("create")
-fun create(
+suspend fun create(
     id    : String,
     height: Int = window.innerHeight,
     width : Int = window.innerWidth
@@ -20,7 +21,7 @@ fun create(
         throw DungeonException("Referenced element is not a canvas!")
     return Dungeon(height, width)
         .withGenerator(BinarySpacePartition(3, 150))
-//        .withRenderer(CanvasPixelRenderer(container))
+        .withRenderer(CanvasPixelRenderer(container))
 }
 
 class Dungeon(
