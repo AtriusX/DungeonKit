@@ -1,2 +1,4 @@
-rootProject.name = 'dungeonkt'
+rootProject.name = 'Dungeon-Kit'
 
+
+enableFeaturePreview('GRADLE_METADATA')
