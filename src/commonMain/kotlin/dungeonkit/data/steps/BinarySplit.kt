@@ -34,8 +34,8 @@ open class BinarySplit(
 
     override fun process(map: Grid<Tile>, tileMap: TileMap<*>): Grid<Tile> {
         partition(splitDepth, listOf(Partition(map.area)))
-            .run { map     { it.makeRoom(padding, tileMap.primary.tile) } }
-            .run { forEach { map += it.tiles                            } }
+            .run { map     { it.makeRoom(padding, tileMap["floor"].tile) } }
+            .run { forEach { map += it.tiles                             } }
         return map
     }
 
