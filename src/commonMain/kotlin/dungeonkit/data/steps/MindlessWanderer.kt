@@ -69,10 +69,11 @@ open class MindlessWanderer(
                 map.isEmpty()   -> map.area.center
                 else            -> map.map { it.key }.run { get(random.nextInt(size)) }
             }
+            val floor = tileMap["floor"].tile
             // Start the wanderers lifespan
             repeat(lifespan) {
                 // Set the current tile as the primary
-                map[pos.x, pos.y] = tileMap.primary.tile
+                map[pos.x, pos.y] = floor
                 for (tries in 0..maxRetries) {
                     // Get the direction and the relative coordinate
                     val direction = Direction.RANDOM
@@ -82,7 +83,7 @@ open class MindlessWanderer(
                         return
                     // Retry if the tile isn't in the map, or if it is and the tile bias check fails
                     if (rel !in map
-                        || (map[rel.x, rel.y] == tileMap.primary.tile
+                        || (map[rel.x, rel.y] == floor
                         && random.nextDouble() < min(newTileBias, 1.0))
                     ) continue
                     // Move the wanderer
