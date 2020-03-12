@@ -11,14 +11,16 @@ import dungeonkit.data.tiles.binding.TileMap
  * completely by non-default tiles. This enables maps to have more open space by
  * clearing out areas that are littered with single-piece walls.
  */
-open class Denoise : Step {
+open class Denoise(
+    private val primary: String = "floor"
+) : Step {
 
     override val status: String
         get() = "Denoising..."
 
     override fun process(map: Grid<Tile>, tileMap: TileMap<*>): Grid<Tile> {
         val default = tileMap.default.tile
-        val primary = tileMap.primary.tile
+        val primary = tileMap[primary].tile
         val empties = HashSet<Coordinate>()
         // Loop over all directions for all tiles on the map
         for (d in Direction) {

@@ -13,6 +13,12 @@ import dungeonkit.data.tiles.Tile
 interface TileMap<D> {
 
     /**
+     * @property tiles The collection of tiles stored in this tilemap. This property should by
+     *                 accessed via either of the [get] methods.
+     */
+    val tiles: Set<TileBinding<Tile, D>>
+
+    /**
      * @property default The default value used in tile maps. It's recommended to use this
      *                   value as the default assignment in [Grid][dungeonkit.data.Grid]
      *                   instances.
@@ -20,24 +26,20 @@ interface TileMap<D> {
     val default: TileBinding<Tile, D>
 
     /**
-     * @property primary The primary tile binding. This should signify the most important
-     *                   tile in your dungeons. Typically used for floor tiles.
-     */
-    val primary: TileBinding<Tile, D>
-
-    /**
-     * @property secondary The secondary tile binding. This tile should represent the
-     *                     second-most important tile. The use of this binding may
-     *                     vary between generators.
-     */
-    val secondary: TileBinding<Tile, D>
-
-    /**
      * Retrieves the proper tile mapping for the requested tile.
      *
      * @param tile The [Tile] used for finding the proper binding.
      * @return     The [TileBinding] related to this [Tile].
      */
-    operator fun get(tile: Tile) = arrayOf(default, primary, secondary)
-        .first { it.tile == tile }
+    operator fun get(tile: Tile) = tiles
+        .first { tile == it.tile }
+
+    /**
+     * Retrieves the proper tile mapping for the requested name.
+     *
+     * @param name The name used for finding the proper binding.
+     * @return     The [TileBinding] related to this [Tile].
+     */
+    operator fun get(name: String) = tiles
+        .first { name.equals(it.tile.name, true) }
 }

@@ -11,7 +11,7 @@ import dungeonkit.data.steps.Eval
 import dungeonkit.data.steps.MindlessWanderer
 import dungeonkit.data.steps.Trim
 import dungeonkit.data.tiles.Tiles
-import dungeonkit.data.tiles.binding.CharTileMap
+import dungeonkit.data.tiles.binding.SimpleCharTileMap
 import dungeonkit.platform
 import dungeonkit.renderer.ConsoleRenderer
 import kotlin.test.Test
@@ -46,7 +46,7 @@ class DungeonTests {
 
     @Test
     fun `Generate dungeon and check name, size, data and bounds`() {
-        val dungeon = DungeonKit.create("Test Dungeon", 100 by 100, CharTileMap())
+        val dungeon = DungeonKit.create("Test Dungeon", 100 by 100, SimpleCharTileMap)
         assertEquals(dungeon.dimension.area, 10000)
         assertEquals(dungeon.name, "Test Dungeon")
     }
@@ -68,7 +68,7 @@ class DungeonTests {
 
     @Test
     fun `Dungeon generation in command line`() {
-        DungeonKit.create(dimension = 80 by 80, tileMap = CharTileMap()).steps(
+        DungeonKit.create(dimension = 80 by 80, tileMap = SimpleCharTileMap).steps(
             MindlessWanderer(20, 450, newTileBias = 0.95, maxRetries = 10),
             Trim, Denoise, Eval { _, _, tile -> if (tile == Tiles.FLOOR &&
                 random.nextInt(100) > 85) Tiles.EXIT else null }
