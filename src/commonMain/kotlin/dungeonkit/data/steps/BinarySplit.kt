@@ -27,6 +27,7 @@ import kotlin.math.min
 open class BinarySplit(
     private  val splitDepth: Int              = 3,
     private  val padding   : Int              = 5,
+    private  val floor     : String           = "floor",
     override val modifiers : Array<Modifier>? = null
 ) : ModifiableStep {
     override val status: String
@@ -34,8 +35,8 @@ open class BinarySplit(
 
     override fun process(map: Grid<Tile>, tileMap: TileMap<*>): Grid<Tile> {
         partition(splitDepth, listOf(Partition(map.area)))
-            .run { map     { it.makeRoom(padding, tileMap["floor"].tile) } }
-            .run { forEach { map += it.tiles                             } }
+            .run { map     { it.makeRoom(padding, tileMap[floor].tile) } }
+            .run { forEach { map += it.tiles                           } }
         return map
     }
 

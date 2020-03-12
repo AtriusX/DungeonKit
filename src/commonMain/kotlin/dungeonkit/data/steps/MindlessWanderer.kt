@@ -38,7 +38,8 @@ open class MindlessWanderer(
     private val maxLifetime    : Int     = 100,
     private val allowSeparation: Boolean = false,
     private val newTileBias    : Double  = 0.5,
-    private val maxRetries     : Int     = 50
+    private val maxRetries     : Int     = 50,
+    private val walkerTile     : String  = "floor"
 ) : Step {
     override val status: String
         get() = "Wandering..."
@@ -69,7 +70,7 @@ open class MindlessWanderer(
                 map.isEmpty()   -> map.area.center
                 else            -> map.map { it.key }.run { get(random.nextInt(size)) }
             }
-            val floor = tileMap["floor"].tile
+            val floor = tileMap[walkerTile].tile
             // Start the wanderers lifespan
             repeat(lifespan) {
                 // Set the current tile as the primary

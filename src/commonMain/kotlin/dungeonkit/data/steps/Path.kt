@@ -20,7 +20,8 @@ import dungeonkit.data.tiles.binding.TileMap
 class Path(
     private val start     : Coordinate,
     private val end       : Coordinate,
-    private val randomness: Double = 0.0
+    private val randomness: Double = 0.0,
+    private val pathTile  : String = "floor"
 ) : Step {
     override val status: String
         get() = "Creating path..."
@@ -46,7 +47,7 @@ class Path(
         map  : Grid<Tile>, tileMap: TileMap<*>,
         start: Coordinate, end    : Coordinate
     ): Grid<Tile> {
-        map[start.x, start.y] = tileMap.primary.tile
+        map[start.x, start.y] = tileMap[pathTile].tile
         val pos = Direction.values()
             .map    { start relative it }
             .filter { it == end || it in map }
