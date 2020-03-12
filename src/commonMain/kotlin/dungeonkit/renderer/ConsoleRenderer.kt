@@ -2,11 +2,11 @@ package dungeonkit.renderer
 
 import dungeonkit.data.Grid
 import dungeonkit.data.tiles.Tile
-import dungeonkit.data.tiles.binding.CharTileMap
+import dungeonkit.data.tiles.binding.SimpleCharTileMap
 
-open class ConsoleRenderer : Renderer<CharTileMap> {
+open class ConsoleRenderer : Renderer<SimpleCharTileMap> {
 
-    override fun render(map: Grid<Tile>, tileMap: CharTileMap) {
+    override fun render(map: Grid<Tile>, tileMap: SimpleCharTileMap) {
         val (w, h) = map.area
         val chars = Array(h) { Array(w) { tileMap.default.data } }
         map.forEach { (pos, tile) ->
