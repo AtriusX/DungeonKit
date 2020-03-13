@@ -14,8 +14,8 @@ import kotlin.random.Random
  * @constructor Creates a new dimension with the specified width and height.
  */
 data class Dimension(
-    val w: Int,
-    val h: Int
+    var w: Int,
+    var h: Int
 ) {
 
     /**
