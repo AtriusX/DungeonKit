@@ -34,7 +34,8 @@ data class Dimension(
      *
      * @return The randomly calculated coordinate.
      */
-    fun random() = random.nextInt(w) at random.nextInt(h)
+    fun random() = (if (w > 0) random.nextInt(w) else 0) at
+            (if (h > 0) random.nextInt(h) else 0)
 
     /**
      * Compounds the values of the dimensions into a new larger dimension. This can be used to add base
@@ -86,6 +87,6 @@ infix fun Int.by(other: Int) = Dimension(this, other)
  * @param padding The amount of spacing placed between the selected point and the
  *                bounds, at minimum.
  */
-fun Random.nextDim(range: Dimension, padding: Int) =
-    nextInt(min(padding, range.w - padding), max(padding, range.w - padding)+1) by
-    nextInt(min(padding, range.h - padding), max(padding, range.h - padding)+1)
+fun Random.nextDim(range: Dimension, minimum: Int) =
+    nextInt(min(minimum, 0), range.w) by
+    nextInt(min(minimum, 0), range.h)
