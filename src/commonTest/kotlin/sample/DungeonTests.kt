@@ -6,12 +6,10 @@ import dungeonkit.data.Direction
 import dungeonkit.data.Grid
 import dungeonkit.data.at
 import dungeonkit.data.by
-import dungeonkit.data.steps.Denoise
-import dungeonkit.data.steps.Eval
-import dungeonkit.data.steps.MindlessWanderer
-import dungeonkit.data.steps.Trim
+import dungeonkit.data.steps.*
 import dungeonkit.data.tiles.Tiles
 import dungeonkit.data.tiles.binding.SimpleCharTileMap
+import dungeonkit.dim
 import dungeonkit.platform
 import dungeonkit.renderer.ConsoleRenderer
 import kotlin.test.Test
@@ -73,5 +71,11 @@ class DungeonTests {
             Trim, Denoise, Eval { _, _, tile -> if (tile == Tiles.FLOOR &&
                 random.nextInt(100) > 85) Tiles.EXIT else null }
         ).render(ConsoleRenderer)
+    }
+
+    @Test
+    fun `Binary split partition testing`() {
+        DungeonKit.create(dimension = 50.dim, tileMap = SimpleCharTileMap)
+            .steps(BinarySplit, Trim(2)).render(ConsoleRenderer)
     }
 }
