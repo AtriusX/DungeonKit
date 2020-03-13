@@ -2,7 +2,7 @@ package dungeonkit.renderer
 
 import dungeonkit.data.Grid
 import dungeonkit.data.tiles.Tile
-import dungeonkit.data.tiles.binding.ColorTileMap
+import dungeonkit.data.tiles.binding.SimpleColorTileMap
 import org.w3c.dom.get
 import kotlin.browser.document
 import org.w3c.dom.CanvasRenderingContext2D as Context
@@ -22,7 +22,7 @@ import org.w3c.dom.HTMLCanvasElement as Canvas
 class CanvasRenderer(
                 canvasId  : String? = null,
     private val autoResize: Boolean = false
-) : Renderer<ColorTileMap> {
+) : Renderer<SimpleColorTileMap> {
     private val canvas : Canvas
     private val context: Context
 
@@ -41,9 +41,9 @@ class CanvasRenderer(
 
     /**
      * Renders the map to a [Canvas] element. Currently this implementation only
-     * supports [ColorTileMap], though later may support an image tile binding.
+     * supports [SimpleColorTileMap], though later may support an image tile binding.
      */
-    override fun render(map: Grid<Tile>, tileMap: ColorTileMap) {
+    override fun render(map: Grid<Tile>, tileMap: SimpleColorTileMap) {
         if (autoResize) canvas.apply {
             width  = map.area.w; height = map.area.h
             context.clearRect(0.0, 0.0, width.toDouble(), height.toDouble())
