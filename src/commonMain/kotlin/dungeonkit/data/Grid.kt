@@ -71,7 +71,7 @@ open class Grid<T>(
      * @param coordinate The [Coordinate] to check bounds for.
      * @return           True if the coordinate fits within the bounds of this grid.
      */
-    operator fun contains(coordinate: Coordinate) = with(coordinate) {
+    operator fun contains(coordinate: Coordinate) = coordinate.run {
         x in 0 until area.w && y in 0 until area.h
     }
 
