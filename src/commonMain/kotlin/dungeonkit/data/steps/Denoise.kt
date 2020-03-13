@@ -35,7 +35,7 @@ open class Denoise(
         for (d in Direction) {
             empties.removeAll {
                 it.relative(d).run {
-                    it in map && map[x, y] == default
+                    this in map && map[x, y] == default
                 }
             }
         }
