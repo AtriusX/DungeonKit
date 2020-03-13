@@ -5,6 +5,7 @@ import dungeonkit.data.*
 import dungeonkit.data.steps.modifiers.Modifier
 import dungeonkit.data.tiles.Tile
 import dungeonkit.data.tiles.binding.TileMap
+import dungeonkit.dim
 import dungeonkit.plus
 import kotlin.math.max
 import kotlin.math.min
@@ -12,121 +13,77 @@ import kotlin.math.min
 /**
  * An implementation of the BSP (Binary Split Partition) algorithm. This algorithm on
  * it's own will split the map into partitions and generate rooms within those partitions.
- * The use of [Modifier] classes will be needed for improving the generator's output.
  *
- * @property splitDepth The number of times we split the map's cells (This will result in
- *                      a doubling of cells for each level of depth).
- * @property padding    The amount of padding to apply to each room in the map. This prevents
- *                      rooms from generating too close to the edge of a [Partition].
- * @property modifiers  The [Modifier] classes applied to this generator. These classes have
- *                      access to more data than [Step] classes do.
- * @constructor         Creates a binary split generator.
- *
- * TODO: Room generation is pretty off right now, look into this later
+ * @property depth       The number of times we split the map's cells (This will result in
+ *                       a doubling of cells for each level of depth).
+ * @property minCellSize The minimum size cells can be when generating partitions in the grid.
+ * @property padding     The amount of padding to apply to each room in the map. This prevents
+ *                       rooms from generating too close to the edge of a [Partition].
+ * @property splitRatio  The max allowable ratio between the width and height of a cell when
+ *                       deciding how to split a partition.
+ * @property floor       The name of the [Tile] which will be retrieved from the provided [TileMap].
+ *                       This will default to "floor" if no value is substituted.
+ * @constructor          Creates a binary split generator.
  */
 open class BinarySplit(
-    private  val splitDepth: Int              = 3,
-    private  val padding   : Int              = 5,
-    private  val floor     : String           = "floor",
-    override val modifiers : Array<Modifier>? = null
-) : ModifiableStep {
+    private val depth      : Int    = 4,
+    private val minCellSize: Int    = 10,
+    private val padding    : Int    = 4,
+    private val splitRatio : Double = 1.75,
+    private val floor      : String = "floor"
+) : Step {
     override val status: String
-        get() = "Generating binary partitions..."
+        get() = "Generating cells..."
 
     override fun process(map: Grid<Tile>, tileMap: TileMap<*>): Grid<Tile> {
-        partition(splitDepth, listOf(Partition(map.area)))
-            .run { map     { it.makeRoom(padding, tileMap[floor].tile) } }
-            .run { forEach { map += it.tiles                           } }
+        partition(depth, listOf(Partition(map.area)))
+            .run { map     { it.makeRoom(tileMap[floor].tile)   } }
+            .run { forEach { map += it?.tiles ?: return@forEach } }
         return map
     }
 
-    /**
-     * Recursively partitions a list of partitions into smaller partitions.
-     *
-     * @param depth      The number of times to split the partitions.
-     * @param partitions The list of partitions to split.
-     * @return           The list of split partitions.
-     */
     private tailrec fun partition(
         depth     : Int,
         partitions: List<Partition>
     ): List<Partition> = if (depth < 1) partitions else partition(
-        depth - 1, partitions.flatMap {
-            it.split(random.nextBoolean(), random.nextDouble(0.2, 1.0))
-        }
+        depth - 1, partitions.flatMap(Partition::split)
     )
 
-    /**
-     * Internal representation of a partition within this generator. [Coordinate] and
-     * [Dimension] classes are not directly used due to the heavy reliance on  raw values.
-     *
-     * @property x  The (x) coordinate of the partition.
-     * @property y  The (y) coordinate of the partition.
-     * @property w  The width of the partition.
-     * @property h  The height of the partition.
-     * @constructor Creates a new partition at the given position and size.
-     */
-    private inner class Partition(
-        private val x: Int, private val y: Int,
-        private val w: Int, private val h: Int
+    private inner class Partition private constructor(
+        val position: Coordinate,
+        val size    : Dimension
     ) {
+        constructor(size: Dimension) : this(0 at 0, size)
 
-        /**
-         * Creates a simple partition residing over the entirety of a [Dimension].
-         *
-         * @property dimension The size of the partition.
-         * @constructor        Creates a new grid matching the dimension's size.
-         */
-        constructor(dimension: Dimension) : this(0, 0, dimension.w, dimension.h)
+        fun split(): List<Partition> {
+            val (x, y)          = position
+            val (width, height) = size
 
-        /**
-         * Gets the x/y coordinate pair as a [Coordinate] object.
-         */
-        private val position: Coordinate
-            get() = x at y
-
-        /**
-         * Gets the height and width as a [Dimension] object.
-         */
-        private val dimension: Dimension
-            get() = w by h
-
-        /**
-         * Splits the partition into smaller ones. The split is center-biased and can be reigned in
-         * or out using the [space] parameter.
-         *
-         * @param vertical Determines if this split will be done vertically or horizontally.
-         * @param space    Determines how far from the center the split is permitted to go.
-         *                 Can be anywhere from 0 (no range) to 1 (full range).
-         * @return         The fully split partition.
-         */
-        fun split(vertical: Boolean, space: Double): List<Partition> {
-            // Gets the split position, this position is center-biased
-            fun pos(len: Int) = with(len / 2) {
-                val bound = (this * space).toInt() / 2
-                this + if (bound == 0) 0 else random.nextInt(min(-bound, bound), max(-bound, bound))
+            val horizontal = when {
+                height > width && width / height >= splitRatio -> false
+                width > height && height / width >= splitRatio -> true
+                else                                           -> random.nextBoolean()
             }
-            // Split the partition in two depending on direction
-            return if (vertical) with(pos(h)) { Partition(x, y, w, this) + Partition(x, y + this, w, h - this) }
-            else                 with(pos(w)) { Partition(x, y, this, h) + Partition(x + this, y, w - this, h) }
+            val max = (if (horizontal) height else width) - minCellSize
+            if (max <= minCellSize)
+                return listOf(this)
+            val split = random.nextInt(minCellSize, max)
+            return if (horizontal)
+                Partition(x at y, width by split)  + Partition(x at y + split, width by height - split)
+            else
+                Partition(x at y, split by height) + Partition(x + split at y, width - split by height)
         }
 
-        /**
-         * Makes a room within the partition, with a specified amount of padding.
-         *
-         * @param pad The amount of padding to apply to the room.
-         * @return    The generated room.
-         */
-        fun makeRoom(pad: Int, tile: Tile): Room {
+        fun makeRoom(tile: Tile): Room? {
             // Get the next random dimension for this partition, padding included
-            val area = random.nextDim(dimension, pad)
+            val area = size - padding.dim
+            // Further reject the generation if the room is too small
+            if (min(area.w, area.h) < padding)
+                return null
             // Get a coordinate in the top-left quadrant of the partition and create a room
-            return Room(position + (dimension - area).random(), area, tile)
+            return Room(position + (size - area).random(), area, tile)
         }
     }
 
-    /**
-     * Provides a default implementation for us to use.
-     */
     companion object : BinarySplit()
 }
