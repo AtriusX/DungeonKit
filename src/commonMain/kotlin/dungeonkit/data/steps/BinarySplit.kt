@@ -30,6 +30,7 @@ open class BinarySplit(
     private val minCellSize: Int    = 10,
     private val padding    : Int    = 4,
     private val splitRatio : Double = 1.75,
+    private val reject     : Double = 0.0,
     private val floor      : String = "floor"
 ) : Step {
     override val status: String
@@ -37,8 +38,8 @@ open class BinarySplit(
 
     override fun process(map: Grid<Tile>, tileMap: TileMap<*>): Grid<Tile> {
         partition(depth, listOf(Partition(map.area)))
-            .run { map     { it.makeRoom(tileMap[floor].tile)   } }
-            .run { forEach { map += it?.tiles ?: return@forEach } }
+            .map     { if (reject < random.nextDouble()) it.makeRoom(tileMap[floor].tile) else null }
+            .forEach { map += it?.tiles ?: return@forEach                                           }
         return map
     }
 
