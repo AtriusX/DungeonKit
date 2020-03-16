@@ -77,7 +77,7 @@ open class MindlessWanderer(
                 map[pos.x, pos.y] = floor
                 for (tries in 0..maxRetries) {
                     // Get the direction and the relative coordinate
-                    val direction = Direction.RANDOM
+                    val direction = Direction.cardinals.random()
                     val rel       = direction.rel + pos
                     // Kill the process if the wanderer fails to move after reaching the max retry count
                     if (tries == maxRetries)
