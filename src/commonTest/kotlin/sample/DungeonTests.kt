@@ -82,6 +82,6 @@ class DungeonTests {
     @Test
     fun `Test cellular automaton generator`() {
         DungeonKit.create(dimension = 70.dim, tileMap = SimpleCharTileMap)
-            .steps(Automaton, Trim(2), Denoise).render(ConsoleRenderer)
+            .steps(Automaton, Trim(2), Smoothing).render(ConsoleRenderer)
     }
 }
