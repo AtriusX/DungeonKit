@@ -21,6 +21,8 @@ import kotlin.math.min
  *                       rooms from generating too close to the edge of a [Partition].
  * @property splitRatio  The max allowable ratio between the width and height of a cell when
  *                       deciding how to split a partition.
+ * @property reject      This determines the rejection chance for a cell. If the conditions are
+ *                       met for this option, a room will not be generated for the specified cell.
  * @property floor       The name of the [Tile] which will be retrieved from the provided [TileMap].
  *                       This will default to "floor" if no value is substituted.
  * @constructor          Creates a binary split generator.
@@ -36,11 +38,10 @@ open class BinarySplit(
     override val status: String
         get() = "Generating cells..."
 
-    override fun process(map: Grid<Tile>, tileMap: TileMap<*>): Grid<Tile> {
+    override fun process(map: Grid<Tile>, tileMap: TileMap<*>) = map.also {
         partition(depth, listOf(Partition(map.area)))
             .map     { if (reject < random.nextDouble()) it.makeRoom(tileMap[floor].tile) else null }
             .forEach { map += it?.tiles ?: return@forEach                                           }
-        return map
     }
 
     private tailrec fun partition(
@@ -79,7 +80,7 @@ open class BinarySplit(
             // Get the next random dimension for this partition, padding included
             val area = size - padding.dim
             // Further reject the generation if the room is too small
-            if (min(area.w, area.h) < padding)
+            if (area.largestSquare < padding)
                 return null
             // Get a coordinate in the top-left quadrant of the partition and create a room
             return Room(position + (size - area).random(), area, tile)
