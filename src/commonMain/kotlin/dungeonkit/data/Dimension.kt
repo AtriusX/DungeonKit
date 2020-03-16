@@ -27,7 +27,15 @@ data class Dimension(
     /**
      * @property area Gets the total area in squares for this dimension.
      */
-    val area = w * h
+    val area: Int
+        get() = w * h
+
+    /**
+     * @property largestSquare Returns the square root of the largest possible
+     *                         square in this dimension.
+     */
+    val largestSquare: Int
+        get() = min(w, h)
 
     /**
      * Calculates a random coordinate within the bounds of this dimension.
