@@ -53,3 +53,10 @@ fun <T : Number> minClamp(a: T, b: T, upper: Int) =
 
 fun <T : Number> maxClamp(a: T, b: T, upper: Int) =
     max(a.toInt(), b.toInt()).coerceIn(0 until upper)
+
+
+fun Boolean.toInt() =
+    if (this) 1 else 0
+
+fun Int.toBoolean() =
+    this > 0
