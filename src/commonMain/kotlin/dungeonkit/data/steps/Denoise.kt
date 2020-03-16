@@ -32,7 +32,7 @@ open class Denoise(
                 }
         }
         // Remove any tiles that border other default tiles
-        for (d in Direction) {
+        for (d in Direction.cardinals) {
             empties.removeAll {
                 it.relative(d).run {
                     this in map && map[x, y] == default
