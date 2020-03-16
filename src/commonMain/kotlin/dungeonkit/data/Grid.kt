@@ -18,7 +18,8 @@ open class Grid<T>(
             val area   : Dimension,
     private val default: T
 ): Iterable<Entry<Coordinate, T>> {
-    protected val data = HashMap<Coordinate, T>()
+
+    protected var data = HashMap<Coordinate, T>()
 
     /**
      * Checks if the grid is currently empty.
@@ -26,6 +27,19 @@ open class Grid<T>(
      * @return True if the grid has no explicitly set tiles.
      */
     fun isEmpty() = data.isEmpty()
+
+    /**
+     * Creates a carbon-copy of this grid and it's data.
+     *
+     * @return A copy of this grid
+     */
+    fun copy() = Grid(area, default).also {
+        it.data(data)
+    }
+
+    private fun data(data: HashMap<Coordinate, T>) {
+        this.data = data
+    }
 
     /**
      * Retrieves a value from the grid. If a value isn't stored in the grid it
@@ -63,7 +77,7 @@ open class Grid<T>(
      *         falls outside of this grid's bounds.
      */
     operator fun plusAssign(other: Grid<T>) = if (other.data.keys.all(this::contains))
-        data += other.data else throw IndexOutOfBoundsException()
+        data.plusAssign(other.data) else throw IndexOutOfBoundsException()
 
     /**
      * Checks if a coordinate fits within the bounds of this grid.

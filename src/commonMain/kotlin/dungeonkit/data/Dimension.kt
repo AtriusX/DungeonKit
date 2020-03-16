@@ -92,7 +92,7 @@ infix fun Int.by(other: Int) = Dimension(this, other)
  *
  * @receiver      The [Random] class to use as our driver.
  * @param range   The valid width and height to create a dimension for.
- * @param padding The amount of spacing placed between the selected point and the
+ * @param minimum The amount of spacing placed between the selected point and the
  *                bounds, at minimum.
  */
 fun Random.nextDim(range: Dimension, minimum: Int) =
