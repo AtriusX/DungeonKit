@@ -105,50 +105,6 @@ data class Coordinate(
 }
 
 /**
- * A representation of the four main cardinal directions.
- */
-enum class Direction(val rel: Coordinate) {
-
-    /**
-     * The northern coordinate mask, adding this to another coordinate retrieves the
-     * relative north [Coordinate].
-     */
-    NORTH(0 at -1),
-
-    /**
-     * The eastern coordinate mask, adding this to another coordinate retrieves the
-     * relative east [Coordinate].
-     */
-    EAST(1 at 0),
-
-    /**
-     * The southern coordinate mask, adding this to another coordinate retrieves the
-     * relative south [Coordinate].
-     */
-    SOUTH(0 at 1),
-
-    /**
-     * The western coordinate mask, adding this to another coordinate retrieves the
-     * relative west [Coordinate].
-     */
-    WEST(-1 at 0);
-
-    companion object {
-
-        /**
-         * @property RANDOM Returns a randomly selected direction.
-         */
-        val RANDOM
-            get() = values().run { this[random.nextInt(size)] }
-
-        /**
-         * Allows this enum to be referenced as an iterator.
-         */
-        operator fun iterator(): Iterator<Direction> = values().iterator()
-    }
-}
-
-/**
  * Helper function for easily creating coordinates at a specific position.
  *
  * @receiver    The (x) position of this coordinate.
