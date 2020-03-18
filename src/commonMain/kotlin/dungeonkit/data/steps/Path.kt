@@ -6,6 +6,8 @@ import dungeonkit.data.Direction
 import dungeonkit.data.Grid
 import dungeonkit.data.tiles.Tile
 import dungeonkit.data.tiles.binding.TileMap
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * This system generates a pathway between two points using recursion. A level of randomness
@@ -13,45 +15,53 @@ import dungeonkit.data.tiles.binding.TileMap
  *
  * @property start      The pathway's start position.
  * @property end        The pathway's end position.
+ * @property maxRange   The max distance the walker is allowed to step at any point.
  * @property randomness The amount of randomness applied to this pathway. Increasing this value
  *                      allows for more interesting path generation.
+ * @property pathTile   The name of the tile used as the path base. This tile will be retrieved
+ *                      from the dungeon's provided [TileMap].
  * @constructor         Constructs a new recursive path generator.
  */
 class Path(
     private val start     : Coordinate,
     private val end       : Coordinate,
+    private val maxRange  : Int    = 25,
     private val randomness: Double = 0.0,
     private val pathTile  : String = "floor"
 ) : Step {
     override val status: String
         get() = "Creating path..."
 
-    override fun process(map: Grid<Tile>, tileMap: TileMap<*>): Grid<Tile> {
-        // Ensure the coordinates are on the map
-        if (start !in map || end !in map)
-            throw IllegalStateException("Coordinates must be within the map!")
-        // Generate the pathway
-        return walk(map, tileMap, start, end)
+    override fun process(map: Grid<Tile>, tileMap: TileMap<*>) = map.also {
+        val walker = Walker(map, tileMap, start)
+        val pos    = walker.position
+        while (pos != end && pos !in end.relatives) {
+            val direction = Direction.cardinals.run {
+                if (random.nextDouble() > randomness) minBy { pos.relative(it) distance end }!! else random()
+            }
+            if (walker.facing?.opposite == direction)
+                continue
+            val step = min((1..max(1, maxRange)).random(), pos.distance(end).toInt())
+            if (pos.relative(direction, step) in map)
+                walker.walk(direction, step)
+        }
     }
 
-    /**
-     * Generates a pathway between two points. This is done recursively and incorporates
-     * a specified amount of randomness within the generation.
-     *
-     * @param map     The map to apply the pathway to.
-     * @param tileMap The [TileMap] supplied.
-     * @param start   The pathway's start position.
-     * @param end     The pathway's end position.
-     */
-    private tailrec fun walk(
-        map  : Grid<Tile>, tileMap: TileMap<*>,
-        start: Coordinate, end    : Coordinate
-    ): Grid<Tile> {
-        map[start.x, start.y] = tileMap[pathTile].tile
-        val pos = Direction.values()
-            .map    { start relative it }
-            .filter { it == end || it in map }
-            .minBy  { (it distance end) + random.nextDouble() * randomness }!!
-        return if (pos == end) map else walk(map, tileMap, pos, end)
+    private inner class Walker(
+        val map     : Grid<Tile>,
+        val tileMap : TileMap<*>,
+        val position: Coordinate
+    ) {
+        var facing: Direction? = null
+            private set
+
+        tailrec fun walk(
+            direction: Direction,
+            steps    : Int
+        ): Unit = if (steps < 1) facing = direction else {
+            val (x, y) = position.move(direction)
+            map[x, y]  = tileMap[pathTile].tile
+            walk(direction, steps - 1)
+        }
     }
 }

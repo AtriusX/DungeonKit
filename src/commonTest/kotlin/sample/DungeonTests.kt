@@ -11,6 +11,7 @@ import dungeonkit.data.tiles.Tiles
 import dungeonkit.data.tiles.binding.SimpleCharTileMap
 import dungeonkit.dim
 import dungeonkit.platform
+import dungeonkit.pos
 import dungeonkit.renderer.ConsoleRenderer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -83,5 +84,11 @@ class DungeonTests {
     fun `Test cellular automaton generator`() {
         DungeonKit.create(dimension = 70.dim, tileMap = SimpleCharTileMap)
             .steps(Automaton, Trim(2), Smoothing).render(ConsoleRenderer)
+    }
+
+    @Test
+    fun `Generate rigid pathway`() {
+        DungeonKit.create(dimension = 50.dim, tileMap = SimpleCharTileMap)
+            .steps(Path(10.pos, 30 at 45), Trim).render(ConsoleRenderer)
     }
 }
