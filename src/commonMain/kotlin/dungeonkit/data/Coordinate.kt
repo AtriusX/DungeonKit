@@ -1,6 +1,5 @@
 package dungeonkit.data
 
-import dungeonkit.DungeonKit.random
 import dungeonkit.sq
 import kotlin.math.sqrt
 
@@ -16,6 +15,15 @@ data class Coordinate(
     var x: Int,
     var y: Int
 ) {
+
+    /**
+     * @property relatives Gets a list of valid relative coordinates for this position.
+     */
+    val relatives: List<Coordinate>
+        get() = arrayOf(
+            relative(Direction.NORTH), relative(Direction.EAST),
+            relative(Direction.SOUTH), relative(Direction.WEST)
+        ).filter { x < 0 || y < 0 }
 
     /**
      * Converts this coordinate to a [Dimension] of [x] width and [y] height.

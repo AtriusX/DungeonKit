@@ -55,13 +55,20 @@ enum class Direction(val rel: Coordinate) {
      */
     WEST(-1 at 0);
 
+    /**
+     * @property opposite Retrieves the direction opposite of this one. Ex. Returns [SOUTH]
+     *                    if the current direction is [NORTH].
+     */
+    val opposite: Direction
+        get() = values()[(values().indexOf(this) + 4) % 8]
+
     companion object {
 
         /**
          * @property RANDOM Returns a randomly selected direction.
          */
         val RANDOM
-            get() = values().run { this[DungeonKit.random.nextInt(size)] }
+            get() = values().random()
 
         /**
          * @property cardinals An array of all cardinal directions.
