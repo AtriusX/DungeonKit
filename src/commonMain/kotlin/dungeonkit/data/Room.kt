@@ -14,10 +14,9 @@ import kotlin.collections.MutableMap.MutableEntry as Entry
  * @param dimension  The width and height of this room.
  * @param floor      The floor [Tile] used for this room.
  */
-@Suppress("MemberVisibilityCanBePrivate")
 class Room(
     val coordinate: Coordinate,
-        dimension : Dimension,
+    val dimension : Dimension,
         floor     : Tile
 ): Grid<Tile>(dimension, floor) {
     init {
@@ -34,6 +33,30 @@ class Room(
     }
 
     /**
+     * @property top Retrieves the coordinates for the top border of the room.
+     */
+    val top: List<Coordinate>
+        get() = border.filter { it.x == 0 }
+
+    /**
+     * @property left Retrieves the coordinates for the left border of the room.
+     */
+    val left: List<Coordinate>
+        get() = border.filter { it.y == 0 }
+
+    /**
+     * @property right Retrieves the coordinates for the right border of the room.
+     */
+    val right: List<Coordinate>
+        get() = border.filter { it.x == dimension.w - 1 }
+
+    /**
+     * @property bottom Retrieves the coordinates for the bottom border of the room.
+     */
+    val bottom: List<Coordinate>
+        get() = border.filter { it.y == dimension.h - 1 }
+
+    /**
      * @property tiles Retrieves the tiles for this room. The data is remapped to the
      *                 proper [Coordinate] before returning (as the data is internally
      *                 based at index 0).
@@ -42,6 +65,7 @@ class Room(
         get() = also {
             forEach { (c, _) -> c.x += coordinate.x; c.y += coordinate.y }
         }
+
     /**
      * @property center The center-point of this room represented as a [Coordinate]
      */
@@ -50,13 +74,12 @@ class Room(
                 area.h / 2 + coordinate.y
 
     /**
-     * Retrieves a list of coordinates that edge the room.
-     *
-     * @return A [List] of border [Coordinate]s.
+     * @property border Retrieves a list of coordinates that edge the room.
      */
-    fun border() = this.map(Entry<Coordinate, Tile>::key).filter {
-        it.x - coordinate.x !in 1 until area.w || it.y - coordinate.y !in 1 until area.h
-    }
+    val border: List<Coordinate>
+        get() = map(Entry<Coordinate, Tile>::key).filter {
+            it.x - coordinate.x !in 1 until area.w || it.y - coordinate.y !in 1 until area.h
+        }
 
     /**
      * Retrieves a tile stored at the specified x/y value. Parameters are rebased
@@ -80,7 +103,3 @@ class Room(
     override operator fun set(x: Int, y: Int, value: Tile) =
         super.set(x - coordinate.x, y - coordinate.y, value)
 }
-
-//operator fun Grid<in Tile>.plusAssign(room: Room) = room.forEach { (pos, tile) ->
-//    this[pos.x + room.coordinate.x, pos.y + room.coordinate.y] = tile
-//}
