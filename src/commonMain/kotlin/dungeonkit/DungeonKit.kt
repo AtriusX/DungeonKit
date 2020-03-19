@@ -36,7 +36,7 @@ object DungeonKit {
 
     init {
         // Log the startup of the library
-        Log.info("Launching DungeonKit on target: $platform")
+        println("Launching DungeonKit on target: $platform")
     }
 
     /**

@@ -20,8 +20,7 @@ import dungeonkit.renderer.Renderer
 data class Dungeon<T : TileMap<*>> internal constructor(
     val name     : String,
     val dimension: Dimension,
-    val tileMap  : T,
-    val logging  : Boolean = true
+    val tileMap  : T
 ) {
     private var map = Grid(dimension, tileMap.default.tile)
 
@@ -34,7 +33,7 @@ data class Dungeon<T : TileMap<*>> internal constructor(
      */
     fun steps(vararg steps: Step) = also {
         steps.forEach {
-            map = it.also{ if (logging) Log.info(it.status) }.process(map, tileMap)
+            map = it.also{ println(it.status) }.process(map, tileMap)
         }
     }
 
