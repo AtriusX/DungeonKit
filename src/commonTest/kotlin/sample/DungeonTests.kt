@@ -11,7 +11,6 @@ import dungeonkit.data.tiles.Tiles
 import dungeonkit.data.tiles.binding.SimpleCharTileMap
 import dungeonkit.dim
 import dungeonkit.platform
-import dungeonkit.pos
 import dungeonkit.renderer.ConsoleRenderer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -89,6 +88,6 @@ class DungeonTests {
     @Test
     fun `Generate rigid pathway`() {
         DungeonKit.create(dimension = 50.dim, tileMap = SimpleCharTileMap)
-            .steps(Path(10.pos, 30 at 45), Trim).render(ConsoleRenderer)
+            .steps(Path(50.dim.random(), 50.dim.random(), randomness = 0.3), Trim).render(ConsoleRenderer)
     }
 }
