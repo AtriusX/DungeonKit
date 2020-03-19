@@ -53,8 +53,9 @@ object DungeonKit {
         name     : String    = "Default Dungeon",
         dimension: Dimension = 50 by 30,
         tileMap  : T,
-        seed     : Int?      = null
-    ) = Dungeon(name, dimension, tileMap).also {
+        seed     : Int?      = null,
+        logging  : Boolean   = true
+    ) = Dungeon(name, dimension, tileMap, logging).also {
         // Update the seed if it's not null
         if (seed != null) this.seed = seed
     }
