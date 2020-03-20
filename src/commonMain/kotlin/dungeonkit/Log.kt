@@ -30,3 +30,14 @@ expect object Log {
      */
     fun error(message: Any?)
 }
+
+/**
+ * This is a workaround method used to support logging on Native since
+ * the native library doesn't have access to [kotlin.io]. This can be
+ * used within the library for testing purposes, though it should be
+ * expected that this function may disappear over time should the
+ * workaround no longer be needed.
+ *
+ * @receiver The object that will be printed.
+ */
+internal fun Any?.log(): Unit = println(this)
