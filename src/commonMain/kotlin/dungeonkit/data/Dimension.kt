@@ -1,7 +1,7 @@
 package dungeonkit.data
 
 import dungeonkit.DungeonKit.random
-import kotlin.math.max
+import dungeonkit.dim
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -88,13 +88,23 @@ data class Dimension(
 infix fun Int.by(other: Int) = Dimension(this, other)
 
 /**
- * Calculates a randomly sized [Dimension] within the specified range, with padding.
+ * Generates a dimension between 0x0 and the upper bound [to].
  *
- * @receiver      The [Random] class to use as our driver.
- * @param range   The valid width and height to create a dimension for.
- * @param minimum The amount of spacing placed between the selected point and the
- *                bounds, at minimum.
+ * @receiver Our driving [Random] instance.
+ * @param to The dimension provided as the upper bound.
+ * @return   The randomly sized dimension.
  */
-fun Random.nextDim(range: Dimension, minimum: Int) =
-    nextInt(min(minimum, 0), range.w) by
-    nextInt(min(minimum, 0), range.h)
+fun Random.nextDim(to: Dimension) =
+    nextDim(0.dim, to)
+
+/**
+ * Generates a dimension between the lower bound [from] and the
+ * upper bound [to].
+ *
+ * @receiver   Our driving [Random] instance.
+ * @param from The dimension provided as the lower bound.
+ * @param to   The dimension provided as the upper bound.
+ * @return     The randomly sized dimension.
+ */
+fun Random.nextDim(from: Dimension, to: Dimension) =
+    nextInt(from.w, to.w) by nextInt(from.h, to.h)
