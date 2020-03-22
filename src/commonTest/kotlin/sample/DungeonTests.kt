@@ -12,7 +12,7 @@ import dungeonkit.data.tiles.binding.SimpleCharTileMap
 import dungeonkit.dim
 import dungeonkit.platform
 import dungeonkit.renderer.ConsoleRenderer
-import dungeonkit.text.Text
+import dungeonkit.text.Title
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -94,6 +94,6 @@ class DungeonTests {
 
     @Test
     fun `Test dungeon name generator`() {
-        println(Text.generate())
+        println(Title.generate())
     }
 }
