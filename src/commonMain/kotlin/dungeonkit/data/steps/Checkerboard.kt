@@ -11,8 +11,9 @@ import dungeonkit.data.tiles.binding.TileMap
  *                    map's checkerboard.
  * @param invert      Determines whether the checkerboard will start
  *                    on either the odd or even tiles.
+ * @constructor       Creates a new checkerboard object.
  */
-class CheckerboardGenerator(
+class Checkerboard(
     private val checkerTile: String = "floor",
     private val invert     : Boolean = false
 ) : Step {
