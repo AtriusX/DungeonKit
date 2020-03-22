@@ -21,7 +21,7 @@ data class Dungeon<T : TileMap<*>> internal constructor(
     val name     : String,
     val dimension: Dimension,
     val tileMap  : T,
-    val logging  : Boolean = true
+    val logging  : Boolean
 ) {
     private var map = Grid(dimension, tileMap.default.tile)
 
