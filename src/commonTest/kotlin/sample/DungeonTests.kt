@@ -68,11 +68,16 @@ class DungeonTests {
 
     @Test @JsName("TestGenCommandLine")
     fun `Dungeon generation in command line`() {
-        DungeonKit.create(dimension = 80 by 80, tileMap = SimpleCharTileMap).steps(
-            MindlessWanderer(20, 450, newTileBias = 0.95, maxRetries = 10),
-            Trim, Denoise, Eval { _, _, tile -> if (tile == Tiles.FLOOR &&
-                random.nextInt(100) > 85) Tiles.EXIT else null }
-        ).render(ConsoleRenderer)
+        val d = DungeonKit.create(dimension = 80 by 80, tileMap = SimpleCharTileMap).steps(
+            MindlessWanderer(20, 450, newTileBias = 0.95, maxRetries = 10), Trim, Denoise
+        )
+
+        if (platform != "Native") {
+            d.steps(Eval { _, _, tile -> if (tile == Tiles.FLOOR &&
+                random.nextInt(100) > 85) Tiles.EXIT else null })
+        }
+
+        d.render(ConsoleRenderer)
     }
 
     @Test @JsName("TestGenBinarySplit")
