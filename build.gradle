@@ -6,8 +6,10 @@ repositories {
     mavenCentral()
     jcenter()
 }
-group 'com.github.AtriusX'
-version '2020.3.1-A'
+
+group = 'com.github.AtriusX'
+
+//version '2020.3.1-A'
 
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
@@ -65,6 +67,11 @@ kotlin {
     }
 }
 
+task sourcesJar(type: Jar, dependsOn: jvmMainClasses) {
+    classifier = 'sources'
+    from sourceSets
+}
+
 dokka {
 //    outputFormat = 'markdown'
     configuration {
@@ -74,4 +81,13 @@ dokka {
         reportUndocumented = true
         skipEmptyPackages = true
     }
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+wrapper {
+    gradleVersion = "5.5.1"
+    distributionType = Wrapper.DistributionType.ALL
 }
