@@ -31,5 +31,13 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: List files
-      run: ls
+    - name: Upload JAR
+      uses: ./
+      with:
+        name: 'DungeonKit-JAR'
+        path:  build/libs/
+    - name: Upload Node Package
+      uses: ./
+      with:
+        name: 'DungeonKit-JS'
+        path: build/js/packages/Dungeon-Kit 
