@@ -32,6 +32,9 @@ jobs:
     - name: Set Build Version
       run: |
         echo ::set-env name=BUILD_VERSION::$(gradle properties -q | grep "version:" | awk '{print $2}' | tr -d '[:space:]')
+    - name: Test Version Code
+      run: |
+        echo $BUILD_VERSION
     - name: Upload JAR
       uses: actions/upload-artifact@v1
       with:
