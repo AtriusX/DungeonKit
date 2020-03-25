@@ -66,11 +66,6 @@ kotlin {
     }
 }
 
-task sourcesJar(type: Jar, dependsOn: jvmMainClasses) {
-    classifier = 'sources'
-    from sourceSets
-}
-
 dokka {
 //    outputFormat = 'markdown'
     configuration {
@@ -87,7 +82,7 @@ task test {
 }
 
 artifacts {
-    archives sourcesJar
+    archives jvmJar
 }
 
 wrapper {
