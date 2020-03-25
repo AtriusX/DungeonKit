@@ -82,6 +82,10 @@ dokka {
     }
 }
 
+task test {
+    dependsOn 'allTests'
+}
+
 artifacts {
     archives sourcesJar
 }
