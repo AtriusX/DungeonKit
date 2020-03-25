@@ -1,5 +1,6 @@
 language: java
-  jvm: openjdk11
+jvm:
+  - openjdk11
 
 before_install:
 - chmod -R +x src
