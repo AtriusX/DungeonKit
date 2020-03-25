@@ -6,9 +6,11 @@ repositories {
     mavenCentral()
     jcenter()
 }
-group 'com.example'
-version '0.0.1'
 
+group = 'com.github.AtriusX'
+version '2020.3.1-A'
+
+apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 kotlin {
@@ -73,4 +75,17 @@ dokka {
         reportUndocumented = true
         skipEmptyPackages = true
     }
+}
+
+task test {
+    dependsOn 'allTests'
+}
+
+artifacts {
+    archives jvmJar
+}
+
+wrapper {
+    gradleVersion = "5.5.1"
+    distributionType = Wrapper.DistributionType.ALL
 }
