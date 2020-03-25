@@ -11,9 +11,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Cache
@@ -31,13 +29,16 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
+    - name: Set Build Version
+      run: |
+        echo ::set-env name=BUILD_VERSION::$(gradle properties -q | grep "version:" | awk '{print $2}' | tr -d '[:space:]')
     - name: Upload JAR
       uses: actions/upload-artifact@v1
       with:
         name: 'DungeonKit-JAR'
-        path:  build/libs/
+        path:  build/libs/Dungeon-Kit-jvm-$BUILD_VERSION.jar
     - name: Upload Node Package
       uses: actions/upload-artifact@v1
       with:
         name: 'DungeonKit-JS'
-        path: build/js/packages/Dungeon-Kit 
+        path: build/js/packages/
