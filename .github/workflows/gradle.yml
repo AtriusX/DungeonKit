@@ -32,12 +32,12 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
     - name: Upload JAR
-      uses: ./
+      uses: actions/upload-artifact@v1
       with:
         name: 'DungeonKit-JAR'
         path:  build/libs/
     - name: Upload Node Package
-      uses: ./
+      uses: actions/upload-artifact@v1
       with:
         name: 'DungeonKit-JS'
         path: build/js/packages/Dungeon-Kit 
