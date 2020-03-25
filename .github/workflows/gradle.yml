@@ -39,8 +39,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: 'DungeonKit-JAR'
-        path:  build/libs/Dungeon-Kit-jvm
-        env: $BUILD_VERSION
+        path:  build/libs/
     - name: Upload Node Package
       uses: actions/upload-artifact@v1
       with:
