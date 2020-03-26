@@ -110,6 +110,22 @@ data class Coordinate(
     operator fun minus(other: Coordinate) = Coordinate(
         x - other.x, y - other.y
     )
+
+    /**
+     * Determines the direction you'd need to travel to reach the [other] [Coordinate] specified.
+     * This can be helpful for providing spacial awareness to generator steps and other objects.
+     *
+     * @param other The coordinate we are finding the relative direction for.
+     * @return      A [Direction] relative to this and [other], or null if the [other] coordinate
+     *              shares the same position as this one.
+     */
+    infix fun directionTo(other: Coordinate): Direction? {
+        val lon = (x - other.x).coerceIn(-1..1)
+        val lat = (y - other.y).coerceIn(-1..1)
+        return Direction.values().find { (x, y) ->
+            x == lon && y == lat
+        }
+    }
 }
 
 /**
