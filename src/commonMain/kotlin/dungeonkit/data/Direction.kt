@@ -1,7 +1,5 @@
 package dungeonkit.data
 
-import dungeonkit.DungeonKit
-
 /**
  * A representation of the four main cardinal directions.
  */
@@ -61,6 +59,20 @@ enum class Direction(val rel: Coordinate) {
      */
     val opposite: Direction
         get() = values()[(values().indexOf(this) + 4) % 8]
+
+    /**
+     * Destructures the X component from the [Coordinate].
+     *
+     * @return The internal [Coordinate]'s X component.
+     */
+    operator fun component1() = rel.x
+
+    /**
+     * Destructures the Y component from the [Coordinate].
+     *
+     * @return The internal [Coordinate]'s Y component.
+     */
+    operator fun component2() = rel.y
 
     companion object {
 
