@@ -60,3 +60,16 @@ fun Boolean.toInt() =
 
 fun Int.toBoolean() =
     this > 0
+
+/**
+ * Experimental static operators for bringing back square
+ * bracket array declarations. These may or may not stay
+ * depending on how they are used.
+ */
+operator fun Byte.Companion.get(size: Int)   = Array(size) { 0 }
+operator fun Short.Companion.get(size: Int)  = Array(size) { 0 }
+operator fun Int.Companion.get(size: Int)    = Array(size) { 0 }
+operator fun Long.Companion.get(size: Int)   = Array(size) { 0 }
+operator fun Float.Companion.get(size: Int)  = Array(size) { 0 }
+operator fun Double.Companion.get(size: Int) = Array(size) { 0 }
+operator fun String.Companion.get(size: Int) = Array(size) { 0 }
