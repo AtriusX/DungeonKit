@@ -31,6 +31,8 @@ open class CellTree(
     private val maxDistance : Int       = 10,
     private val overlayRooms: Boolean   = false
 ) : Step {
+    override val status: String
+        get() = "Generating cell tree..."
 
     override fun process(map: Grid<Tile>, tileMap: TileMap<*>) = map.also {
         val size = random.nextDim(minRoomSize, maxRoomSize)
