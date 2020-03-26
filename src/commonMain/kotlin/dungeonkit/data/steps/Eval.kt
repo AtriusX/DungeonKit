@@ -9,6 +9,9 @@ import dungeonkit.minClamp
 import dungeonkit.pos
 
 /**
+ * @warn This step is unsafe for use on native platforms, please avoid using it
+ *       for this purpose.
+ *
  * This allows for simple custom code evaluations to be done within the step chain.
  * Evaluations can be done over a selected area noted between two [coordinates][Coordinate].
  *

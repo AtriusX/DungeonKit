@@ -3,6 +3,8 @@ package dungeonkit
 import dungeonkit.data.Dimension
 import dungeonkit.data.by
 import dungeonkit.data.tiles.binding.TileMap
+import dungeonkit.text.Title
+import kotlin.native.concurrent.ThreadLocal
 import kotlin.properties.Delegates.observable
 import kotlin.random.Random
 import kotlin.random.Random.Default.nextInt
@@ -15,7 +17,7 @@ import kotlin.random.Random.Default.nextInt
  *
  * TODO : Compounder Step for merging multiple maps together?
  */
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate") @ThreadLocal
 object DungeonKit {
 
     /**
@@ -50,7 +52,7 @@ object DungeonKit {
      * @return          The newly created [Dungeon] instance.
      */
     fun <T : TileMap<*>> create(
-        name     : String    = "Default Dungeon",
+        name     : String    = Title.generate(),
         dimension: Dimension = 50 by 30,
         tileMap  : T,
         seed     : Int?      = null,

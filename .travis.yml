@@ -1,0 +1,9 @@
+language: java
+jvm:
+  - openjdk11
+
+before_install:
+- chmod -R +x src
+- chmod +x gradlew
+
+script: ./gradlew clean build

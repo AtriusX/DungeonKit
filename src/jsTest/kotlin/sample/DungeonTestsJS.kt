@@ -5,7 +5,7 @@ import kotlin.test.assertTrue
 
 class DungeonTestsJS {
     @Test
-    fun testHello() {
-        assertTrue("JS" in hello())
+    fun test() {
+        assertTrue("hello" in "hello world!")
     }
 }

@@ -12,6 +12,8 @@ import dungeonkit.data.tiles.binding.SimpleCharTileMap
 import dungeonkit.dim
 import dungeonkit.platform
 import dungeonkit.renderer.ConsoleRenderer
+import dungeonkit.text.Title
+import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -20,7 +22,7 @@ import kotlin.test.assertNotEquals
 class DungeonTests {
     init { println("Running $platform tests...") }
 
-    @Test
+    @Test @JsName("TestCoordsAndDims")
     fun `Test coordinates and dimensions`() {
         val c1 = 10 at 15
         val c2 = 15 at 15
@@ -42,14 +44,14 @@ class DungeonTests {
         assertEquals(d - (3 by 2), 5  by 6)
     }
 
-    @Test
+    @Test @JsName("TestGenDungeon")
     fun `Generate dungeon and check name, size, data and bounds`() {
         val dungeon = DungeonKit.create("Test Dungeon", 100 by 100, SimpleCharTileMap)
         assertEquals(dungeon.dimension.area, 10000)
         assertEquals(dungeon.name, "Test Dungeon")
     }
 
-    @Test
+    @Test @JsName("TestBounds")
     fun `Test grid bounds and tiles`() {
         val grid = Grid(100 by 100, Tiles.WALL)
         // Test bounds
@@ -64,30 +66,40 @@ class DungeonTests {
         assertEquals(grid[50,50], Tiles.FLOOR)
     }
 
-    @Test
+    @Test @JsName("TestGenCommandLine")
     fun `Dungeon generation in command line`() {
-        DungeonKit.create(dimension = 80 by 80, tileMap = SimpleCharTileMap).steps(
-            MindlessWanderer(20, 450, newTileBias = 0.95, maxRetries = 10),
-            Trim, Denoise, Eval { _, _, tile -> if (tile == Tiles.FLOOR &&
-                random.nextInt(100) > 85) Tiles.EXIT else null }
-        ).render(ConsoleRenderer)
+        val d = DungeonKit.create(dimension = 80 by 80, tileMap = SimpleCharTileMap).steps(
+            MindlessWanderer(20, 450, newTileBias = 0.95, maxRetries = 10), Trim, Denoise
+        )
+
+        if (platform != "Native") {
+            d.steps(Eval { _, _, tile -> if (tile == Tiles.FLOOR &&
+                random.nextInt(100) > 85) Tiles.EXIT else null })
+        }
+
+        d.render(ConsoleRenderer)
     }
 
-    @Test
+    @Test @JsName("TestGenBinarySplit")
     fun `Binary split partition testing`() {
         DungeonKit.create(dimension = 50.dim, tileMap = SimpleCharTileMap)
             .steps(BinarySplit, Trim(2)).render(ConsoleRenderer)
     }
 
-    @Test
+    @Test @JsName("TestGenCellularAutonoma")
     fun `Test cellular automaton generator`() {
         DungeonKit.create(dimension = 70.dim, tileMap = SimpleCharTileMap)
             .steps(Automaton, Trim(2), Smoothing).render(ConsoleRenderer)
     }
 
-    @Test
+    @Test @JsName("TestGenRigidPath")
     fun `Generate rigid pathway`() {
         DungeonKit.create(dimension = 50.dim, tileMap = SimpleCharTileMap)
             .steps(Path(50.dim.random(), 50.dim.random(), randomness = 0.3), Trim).render(ConsoleRenderer)
+    }
+
+    @Test @JsName("TestGenDungeonTitle")
+    fun `Test dungeon name generator`() {
+        println(Title.generate())
     }
 }
