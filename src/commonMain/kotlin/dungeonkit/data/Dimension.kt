@@ -42,8 +42,9 @@ data class Dimension(
      *
      * @return The randomly calculated coordinate.
      */
-    fun random() = (if (w > 0) random.nextInt(w) else 0) at
-            (if (h > 0) random.nextInt(h) else 0)
+    fun random(padding: Int = 0) =
+        (if (w > 0) random.nextInt(w) else 0).coerceIn(padding, w - padding) at
+        (if (h > 0) random.nextInt(h) else 0).coerceIn(padding, h - padding)
 
     /**
      * Compounds the values of the dimensions into a new larger dimension. This can be used to add base
