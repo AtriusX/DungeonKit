@@ -3,6 +3,7 @@ package dungeonkit.data.steps
 import dungeonkit.DungeonKit.random
 import dungeonkit.data.Dimension
 import dungeonkit.data.Grid
+import dungeonkit.data.Room
 import dungeonkit.data.nextDim
 import dungeonkit.data.tiles.Tile
 import dungeonkit.data.tiles.binding.TileMap
@@ -26,16 +27,29 @@ import dungeonkit.dim
  */
 open class CellTree(
     private val minRoomSize : Dimension = 5.dim,
-    private val maxRoomSize : Dimension = 9.dim,
+    private val maxRoomSize : Dimension = 11.dim,
     private val maxRooms    : Int       = 10,
     private val maxDistance : Int       = 10,
-    private val overlayRooms: Boolean   = false
+    private val overlayRooms: Boolean   = false,
+    private val floor       : String    = "floor"
 ) : Step {
     override val status: String
         get() = "Generating cell tree..."
 
     override fun process(map: Grid<Tile>, tileMap: TileMap<*>) = map.also {
-        val size = random.nextDim(minRoomSize, maxRoomSize)
+        val floor = tileMap[floor].tile
+        val rooms = arrayListOf<Room>()
+        var i = 0
+        while (i < 10) {
+            val size = random.nextDim(minRoomSize, maxRoomSize)
+            val pos  = (map.area - size).random(padding = 1)
+            val room = Room(pos, size, floor)
+            if (!rooms.any { it.contains(room) }) {
+                map += room.tiles
+                rooms.add(room)
+                i++
+            }
+        }
     }
 
     companion object : CellTree()
