@@ -98,6 +98,12 @@ class DungeonTests {
             .steps(Path(50.dim.random(), 50.dim.random(), randomness = 0.3), Trim).render(ConsoleRenderer)
     }
 
+    @Test @JsName("TestGenCellTree")
+    fun `Generate cell tree map`() {
+        DungeonKit.create(dimension = 60.dim, tileMap = SimpleCharTileMap)
+            .steps(CellTree, Trim).render(ConsoleRenderer)
+    }
+
     @Test @JsName("TestGenDungeonTitle")
     fun `Test dungeon name generator`() {
         println(Title.generate())
