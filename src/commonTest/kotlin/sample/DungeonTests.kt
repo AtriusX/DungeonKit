@@ -101,7 +101,7 @@ class DungeonTests {
     @Test @JsName("TestGenCellTree")
     fun `Generate cell tree map`() {
         DungeonKit.create(dimension = 60.dim, tileMap = SimpleCharTileMap)
-            .steps(CellTree).render(ConsoleRenderer)
+            .steps(CellTree, Trim).render(ConsoleRenderer)
     }
 
     @Test @JsName("TestGenDungeonTitle")

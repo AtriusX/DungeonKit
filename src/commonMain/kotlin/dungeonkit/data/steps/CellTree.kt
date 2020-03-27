@@ -15,22 +15,25 @@ import dungeonkit.dim
  * to [BinarySplit], however the algorithm doesn't use any partition modeling, and rooms
  * size is constrained within a specified range.
  *
- * @property minRoomSize  The min permitted room dimensions.
- * @property maxRoomSize  The max permitted room dimensions.
- * @property maxRooms     The max number of rooms permitted within this generation step.
- * @property maxDistance  The max number of tiles a new room can be placed away from the
- *                        previously generated room, this is to prevent rooms from being
- *                        thrown around the map completely at random.
- * @property overlayRooms Determines whether or not the generator is allowed to place rooms
- *                        where a tile has already been placed.
- * @constructor           Creates a cell-tree generator.
+ * @property minRoomSize      The min permitted room dimensions.
+ * @property maxRoomSize      The max permitted room dimensions.
+ * @property maxRooms         The max number of rooms permitted within this generation step.
+ * @property maxRange         The maximum number of steps a path can take at any given time.
+ * @property randomness       The amount of path randomness allowed in the generation of the
+ *                            dungeon's layout.
+ * @property allowRoomOverlap Determines whether or not the generator is allowed to place rooms
+ *                            where a tile has already been placed.
+ * @property floor            The name of the floor tile used for this generator. All tiles
+ *                            generated in this generator will use this tile.
+ * @constructor               Creates a cell-tree generator.
  */
 open class CellTree(
     private val minRoomSize : Dimension = 5.dim,
     private val maxRoomSize : Dimension = 11.dim,
     private val maxRooms    : Int       = 10,
-    private val maxDistance : Int       = 10,
-    private val overlayRooms: Boolean   = false,
+    private val maxRange    : Int       = 10,
+    private val randomness  : Double    = 0.0,
+    private val allowRoomOverlap: Boolean   = false,
     private val floor       : String    = "floor"
 ) : Step {
     override val status: String
@@ -39,15 +42,21 @@ open class CellTree(
     override fun process(map: Grid<Tile>, tileMap: TileMap<*>) = map.also {
         val floor = tileMap[floor].tile
         val rooms = arrayListOf<Room>()
-        var i = 0
-        while (i < 10) {
+        var count = 0
+        while (count < maxRooms) {
+            // Calculate the room size and position
             val size = random.nextDim(minRoomSize, maxRoomSize)
             val pos  = (map.area - size).random(padding = 1)
             val room = Room(pos, size, floor)
-            if (!rooms.any { it.contains(room) }) {
+            // Make sure the rooms are allowed to overlap, check for collisions if they aren't
+            if (allowRoomOverlap || !rooms.any { room in it }) {
                 map += room.tiles
+                // Connect the previous room to the current one
+                if (rooms.isNotEmpty()) Path(
+                    room.center, rooms.last().center, maxRange, randomness, floor.name
+                ).process(map, tileMap)
                 rooms.add(room)
-                i++
+                count++
             }
         }
     }
