@@ -7,8 +7,6 @@ import dungeonkit.data.tiles.Tile
 import dungeonkit.data.tiles.binding.TileMap
 import dungeonkit.dim
 import dungeonkit.plus
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * An implementation of the BSP (Binary Split Partition) algorithm. This algorithm on
@@ -25,23 +23,32 @@ import kotlin.math.min
  *                       met for this option, a room will not be generated for the specified cell.
  * @property floor       The name of the [Tile] which will be retrieved from the provided [TileMap].
  *                       This will default to "floor" if no value is substituted.
+ * @property modifiers   The modifiers that can be applied to this class, currently support only
+ *                       exists for [RoomModifier] instances.
  * @constructor          Creates a binary split generator.
  */
 open class BinarySplit(
-    private val depth      : Int    = 4,
-    private val minCellSize: Int    = 10,
-    private val padding    : Int    = 4,
-    private val splitRatio : Double = 1.75,
-    private val reject     : Double = 0.0,
-    private val floor      : String = "floor"
-) : Step {
+    private         val depth      : Int    = 4,
+    private         val minCellSize: Int    = 10,
+    private         val padding    : Int    = 4,
+    private         val splitRatio : Double = 1.75,
+    private         val reject     : Double = 0.0,
+    private         val floor      : String = "floor",
+    override vararg val modifiers  : Modifier
+) : Step, ModifiableStep {
     override val status: String
         get() = "Generating cells..."
 
     override fun process(map: Grid<Tile>, tileMap: TileMap<*>) = map.also {
+        val rooms = arrayListOf<Room>()
+        // Process the map into partitions and rooms, then store the rooms in the above list
         partition(depth, listOf(Partition(map.area)))
             .map     { if (reject < random.nextDouble()) it.makeRoom(tileMap[floor].tile) else null }
-            .forEach { map += it?.tiles ?: return@forEach                                           }
+            .forEach { rooms.add(it ?: return@forEach).apply { map += it.tiles }                    }
+        // Loop over each room and connect them together
+        for (i in 1 until rooms.size) {
+            Path(rooms[i - 1].center, rooms[i].center, maxRange = 5, pathTile = floor).process(map, tileMap)
+        }
     }
 
     private tailrec fun partition(
