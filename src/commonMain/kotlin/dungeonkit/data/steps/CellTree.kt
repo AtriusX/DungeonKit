@@ -1,10 +1,13 @@
 package dungeonkit.data.steps
 
 import dungeonkit.DungeonKit.random
+import dungeonkit.Log
 import dungeonkit.data.Dimension
 import dungeonkit.data.Grid
 import dungeonkit.data.Room
 import dungeonkit.data.nextDim
+import dungeonkit.data.steps.modifiers.Modifier
+import dungeonkit.data.steps.modifiers.RoomModifier
 import dungeonkit.data.tiles.Tile
 import dungeonkit.data.tiles.binding.TileMap
 import dungeonkit.dim
@@ -28,14 +31,15 @@ import dungeonkit.dim
  * @constructor               Creates a cell-tree generator.
  */
 open class CellTree(
-    private val minRoomSize : Dimension = 5.dim,
-    private val maxRoomSize : Dimension = 11.dim,
-    private val maxRooms    : Int       = 10,
-    private val maxRange    : Int       = 10,
-    private val randomness  : Double    = 0.0,
-    private val allowRoomOverlap: Boolean   = false,
-    private val floor       : String    = "floor"
-) : Step {
+    private         val minRoomSize     : Dimension = 5.dim,
+    private         val maxRoomSize     : Dimension = 11.dim,
+    private         val maxRooms        : Int       = 10,
+    private         val maxRange        : Int       = 10,
+    private         val randomness      : Double    = 0.0,
+    private         val allowRoomOverlap: Boolean   = false,
+    private         val floor           : String    = "floor",
+    override vararg val modifiers       : Modifier
+) : Step, ModifiableStep {
     override val status: String
         get() = "Generating cell tree..."
 
@@ -57,6 +61,13 @@ open class CellTree(
                 ).process(map, tileMap)
                 rooms.add(room)
                 count++
+            }
+        }
+        // Apply modifiers
+        for (m in modifiers) {
+            when (m) {
+                is RoomModifier -> m.modify(map, tileMap, rooms)
+                else            -> Log.warn("${m::class.simpleName} is not supported by this generator!")
             }
         }
     }

@@ -3,6 +3,7 @@ package dungeonkit.data.steps.modifiers
 import dungeonkit.data.Grid
 import dungeonkit.data.Room
 import dungeonkit.data.tiles.Tile
+import dungeonkit.data.tiles.binding.TileMap
 
 /**
  * This interface describes a grid modifier that requests [Room] context. The data provided
@@ -18,5 +19,5 @@ interface RoomModifier : Modifier {
      * @param rooms The [Room] data provided for the [Grid].
      * @return      The modified map data.
      */
-    fun modify(map: Grid<Tile>, rooms: List<Room>): Grid<Tile>
+    fun modify(map: Grid<Tile>, tileMap: TileMap<*>, rooms: List<Room>): Grid<Tile>
 }
