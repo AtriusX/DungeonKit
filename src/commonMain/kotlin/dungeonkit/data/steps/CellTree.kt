@@ -28,6 +28,8 @@ import dungeonkit.dim
  *                            where a tile has already been placed.
  * @property floor            The name of the floor tile used for this generator. All tiles
  *                            generated in this generator will use this tile.
+ * @property modifiers        The modifiers that can be applied to this class, currently support
+ *                            only exists for [RoomModifier] instances.
  * @constructor               Creates a cell-tree generator.
  */
 open class CellTree(
