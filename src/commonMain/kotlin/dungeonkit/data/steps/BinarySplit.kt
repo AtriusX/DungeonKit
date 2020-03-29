@@ -1,8 +1,10 @@
 package dungeonkit.data.steps
 
 import dungeonkit.DungeonKit.random
+import dungeonkit.Log
 import dungeonkit.data.*
 import dungeonkit.data.steps.modifiers.Modifier
+import dungeonkit.data.steps.modifiers.RoomModifier
 import dungeonkit.data.tiles.Tile
 import dungeonkit.data.tiles.binding.TileMap
 import dungeonkit.dim
@@ -48,6 +50,13 @@ open class BinarySplit(
         // Loop over each room and connect them together
         for (i in 1 until rooms.size) {
             Path(rooms[i - 1].center, rooms[i].center, maxRange = 5, pathTile = floor).process(map, tileMap)
+        }
+        // Apply modifiers TODO: Find a better way to implement this without code duplication
+        for (m in modifiers) {
+            when (m) {
+                is RoomModifier -> m.modify(map, tileMap, rooms)
+                else            -> Log.warn("${m::class.simpleName} is not supported by this generator!")
+            }
         }
     }
 
