@@ -21,7 +21,7 @@ class Exit(
         get() = "Dropping exit..."
 
     override fun process(map: Grid<Tile>, tileMap: TileMap<*>) = map.also {
-        map.shuffled().random().setValue(tileMap[exit].tile)
+        map[map.random().key] = tileMap[exit].tile
     }
 
     override fun modify(map: Grid<Tile>, tileMap: TileMap<*>, rooms: List<Room>) =

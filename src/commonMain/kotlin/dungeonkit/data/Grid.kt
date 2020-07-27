@@ -1,6 +1,6 @@
 package dungeonkit.data
 
-import kotlin.collections.MutableMap.MutableEntry as Entry
+import kotlin.collections.Map.Entry
 
 /**
  * An implementation of a 2D Grid. This class includes support for generics however
@@ -19,7 +19,7 @@ open class Grid<T>(
     private val default: T
 ): Iterable<Entry<Coordinate, T>> {
 
-    protected var data = HashMap<Coordinate, T>()
+    var data = HashMap<Coordinate, T>()
 
     /**
      * Checks if the grid is currently empty.
@@ -34,11 +34,19 @@ open class Grid<T>(
      * @return A copy of this grid
      */
     fun copy() = Grid(area, default).also {
-        it.data(data)
+        it.data(HashMap(data))
     }
 
     private fun data(data: HashMap<Coordinate, T>) {
         this.data = data
+    }
+
+    fun random() =
+        data.entries.random()
+
+
+    fun remove(vararg coordinates: Coordinate) {
+        for (pos in coordinates) data.remove(pos)
     }
 
     /**
@@ -52,8 +60,20 @@ open class Grid<T>(
      * @throws IndexOutOfBoundsException If the requested index is outside the
      *         dimensions of the grid.
      */
-    open operator fun get(x: Int, y: Int) = if (x at y !in this)
-        throw IndexOutOfBoundsException() else data[x at y] ?: default
+    open operator fun get(x: Int, y: Int) = get(x at y)
+
+    /**
+     * Retrieves a value from the grid. If a value isn't stored in the grid it
+     * will return the default value.
+     *
+     * @param coordinate The x/y coordinate pair of the data.
+     * @return           The data stored at the specified index.
+     *
+     * @throws IndexOutOfBoundsException If the requested index is outside the
+     *         dimensions of the grid.
+     */
+    open operator fun get(coordinate: Coordinate) = if (coordinate !in this)
+        throw IndexOutOfBoundsException() else data[coordinate] ?: default
 
     /**
      * Sets a value at the specified point in the grid.
@@ -65,8 +85,21 @@ open class Grid<T>(
      * @throws IndexOutOfBoundsException If the requested index is outside the
      *         dimensions of this grid.
      */
-    open operator fun set(x: Int, y: Int, value: T) = if (x at y !in this)
-        throw IndexOutOfBoundsException() else data[x at y] = value
+    open operator fun set(x: Int, y: Int, value: T) {
+        this[x at y] = value
+    }
+
+    /**
+     * Sets a value at the specified point in the grid.
+     *
+     * @param coordinate The x/y coordinate pair to set at.
+     * @param value      The new value set at the coordinate.
+     *
+     * @throws IndexOutOfBoundsException If the requested index is outside the
+     *         dimensions of this grid.
+     */
+    open operator fun set(coordinate: Coordinate, value: T) = if (coordinate !in this)
+        throw IndexOutOfBoundsException() else data[coordinate] = value
 
     /**
      * Adds the contents of another grid to this one.

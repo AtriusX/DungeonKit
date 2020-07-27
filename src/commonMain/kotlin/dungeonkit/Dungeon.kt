@@ -34,7 +34,9 @@ data class Dungeon<T : TileMap<*>> internal constructor(
      */
     fun steps(vararg steps: Step) = also {
         steps.forEach {
-            map = it.also{ if (logging) Log.info(it.status) }.process(map, tileMap)
+            map = it
+                .also { if (logging) Log.info(it.status) }
+                .process(map, tileMap)
         }
     }
 

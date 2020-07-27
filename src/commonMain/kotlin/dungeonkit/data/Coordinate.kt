@@ -23,7 +23,7 @@ data class Coordinate(
         get() = arrayOf(
             relative(Direction.NORTH), relative(Direction.EAST),
             relative(Direction.SOUTH), relative(Direction.WEST)
-        ).filter { x < 0 || y < 0 }
+        ).filter { x >= 0 || y >= 0 }
 
     /**
      * Converts this coordinate to a [Dimension] of [x] width and [y] height.

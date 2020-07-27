@@ -1,7 +1,6 @@
 package dungeonkit.data
 
 import dungeonkit.data.tiles.Tile
-import kotlin.collections.MutableMap.MutableEntry as Entry
 
 /**
  * A representation of a [dungeonkit.Dungeon] room. This effectively functions as
@@ -77,7 +76,7 @@ class Room(
      * @property border Retrieves a list of coordinates that edge the room.
      */
     val border: List<Coordinate>
-        get() = map(Entry<Coordinate, Tile>::key).filter {
+        get() = map{ it.key }.filter {
             it.x - pos.x !in 1 until area.w || it.y - pos.y !in 1 until area.h
         }
 
