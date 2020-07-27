@@ -14,11 +14,11 @@ import dungeonkit.platform
 import dungeonkit.renderer.ConsoleRenderer
 import dungeonkit.text.Title
 import kotlin.js.JsName
+import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertNotEquals
-
 class DungeonTests {
     init { println("Running $platform tests...") }
 
@@ -69,13 +69,11 @@ class DungeonTests {
     @Test @JsName("TestGenCommandLine")
     fun `Dungeon generation in command line`() {
         val d = DungeonKit.create(dimension = 80 by 80, tileMap = SimpleCharTileMap).steps(
-            MindlessWanderer(20, 450, newTileBias = 0.95, maxRetries = 10), Trim, Denoise
+            MindlessWanderer(20, 450, newTileBias = 0.95, maxRetries = 10), Trim, Denoise,
+            Eval { _, _, tile ->
+                if (tile == Tiles.FLOOR && random.nextInt(100) > 85) Tiles.EXIT else null
+            }
         )
-
-        if (platform != "Native") {
-            d.steps(Eval { _, _, tile -> if (tile == Tiles.FLOOR &&
-                random.nextInt(100) > 85) Tiles.EXIT else null })
-        }
 
         d.render(ConsoleRenderer)
     }
@@ -83,7 +81,23 @@ class DungeonTests {
     @Test @JsName("TestGenBinarySplit")
     fun `Binary split partition testing`() {
         DungeonKit.create(dimension = 50.dim, tileMap = SimpleCharTileMap)
-            .steps(BinarySplit, Trim(2)).render(ConsoleRenderer)
+            .steps(
+                BinarySplit(6),
+                Trim(2),
+                RegionDetect { region, map, tileMap ->
+                    Path(
+                        region.positions.random(),
+                        region.next?.positions?.random() ?: return@RegionDetect,
+                        5
+                    ).process(map, tileMap)
+                    if (Random.nextBoolean()) {
+                        for (pos in region.positions) {
+                            if (Random.nextDouble() > 0.6)
+                                map[pos] = tileMap["exit"].tile
+                        }
+                    }
+                }
+            ).render(ConsoleRenderer)
     }
 
     @Test @JsName("TestGenCellularAutonoma")
@@ -109,3 +123,4 @@ class DungeonTests {
         println(Title.generate())
     }
 }
+
