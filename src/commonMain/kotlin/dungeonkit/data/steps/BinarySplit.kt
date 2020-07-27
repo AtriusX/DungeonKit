@@ -37,7 +37,7 @@ open class BinarySplit(
     private         val reject     : Double = 0.0,
     private         val floor      : String = "floor",
     override vararg val modifiers  : Modifier
-) : Step, ModifiableStep {
+) : ModifiableStep {
     override val status: String
         get() = "Generating cells..."
 

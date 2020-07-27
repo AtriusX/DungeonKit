@@ -1,12 +1,10 @@
 package dungeonkit.data.steps
 
+import dungeonkit.*
 import dungeonkit.data.Coordinate
 import dungeonkit.data.Grid
 import dungeonkit.data.tiles.Tile
 import dungeonkit.data.tiles.binding.TileMap
-import dungeonkit.maxClamp
-import dungeonkit.minClamp
-import dungeonkit.pos
 
 /**
  * @warn This step is unsafe for use on native platforms, please avoid using it
@@ -31,6 +29,11 @@ class Eval(
         get() = "Evaluating expression..."
 
     override fun process(map: Grid<Tile>, tileMap: TileMap<*>): Grid<Tile> {
+        // Skip this step completely since it seems to cause problems with kotlin native
+        if (platform == "Native") {
+            Log.info("Skipped evaluation: Not supported on Native")
+            return map
+        }
         val (w, h) = map.area
         // Loop over the entire grid (this does a lot to ensure the range is always valid)
         for (x in minClamp(pos1.x, pos2.x, w) until maxClamp(pos1.x, pos2.x, w))
