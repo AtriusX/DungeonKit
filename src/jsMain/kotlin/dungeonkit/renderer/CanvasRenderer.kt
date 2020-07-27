@@ -3,8 +3,8 @@ package dungeonkit.renderer
 import dungeonkit.data.Grid
 import dungeonkit.data.tiles.Tile
 import dungeonkit.data.tiles.binding.SimpleColorTileMap
+import kotlinx.browser.document
 import org.w3c.dom.get
-import kotlin.browser.document
 import org.w3c.dom.CanvasRenderingContext2D as Context
 import org.w3c.dom.HTMLCanvasElement as Canvas
 

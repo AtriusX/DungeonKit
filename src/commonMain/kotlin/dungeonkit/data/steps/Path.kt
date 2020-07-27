@@ -37,7 +37,7 @@ class Path(
         val pos    = walker.position
         while (pos != end && pos !in end.relatives) {
             val direction = Direction.cardinals.run {
-                if (random.nextDouble() > randomness) minBy { pos.relative(it) distance end }!! else random()
+                if (random.nextDouble() > randomness) minByOrNull { pos.relative(it) distance end }!! else random()
             }
             if (walker.facing?.opposite == direction)
                 continue

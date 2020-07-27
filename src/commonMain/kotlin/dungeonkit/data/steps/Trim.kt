@@ -26,8 +26,8 @@ open class Trim(
         val (w, h) = map.area
         val keys = map.map { it.key }
         // Get the min and max bounds for the map
-        val low  = (keys.minBy { it.x }?.x ?: 0) at (keys.minBy { it.y }?.y ?: 0)
-        val high = (keys.maxBy { it.x }?.x ?: w) at (keys.maxBy { it.y }?.y ?: h)
+        val low  = (keys.minByOrNull { it.x }?.x ?: 0) at (keys.minByOrNull { it.y }?.y ?: 0)
+        val high = (keys.maxByOrNull { it.x }?.x ?: w) at (keys.maxByOrNull { it.y }?.y ?: h)
         // Calculate the area with padding
         val area = (high - low + 1.pos + (padding * 2).pos).toDim()
         // Create a new grid of the proper size and populate it
