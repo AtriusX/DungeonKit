@@ -1,9 +1,7 @@
 package dungeonkit.data.steps
 
 import dungeonkit.DungeonKit.random
-import dungeonkit.Log
 import dungeonkit.data.*
-import dungeonkit.data.steps.modifiers.Modifier
 import dungeonkit.data.steps.modifiers.RoomModifier
 import dungeonkit.data.tiles.Tile
 import dungeonkit.data.tiles.binding.TileMap
@@ -36,7 +34,7 @@ open class BinarySplit(
     private         val splitRatio : Double = 1.75,
     private         val reject     : Double = 0.0,
     private         val floor      : String = "floor",
-    override vararg val modifiers  : Modifier
+    override vararg val modifiers  : RoomModifier
 ) : ModifiableStep {
     override val status: String
         get() = "Generating cells..."
@@ -51,13 +49,8 @@ open class BinarySplit(
         for (i in 1 until rooms.size) {
             Path(rooms[i - 1].center, rooms[i].center, maxRange = 5, pathTile = floor).process(map, tileMap)
         }
-        // Apply modifiers TODO: Find a better way to implement this without code duplication
-        for (m in modifiers) {
-            when (m) {
-                is RoomModifier -> m.modify(map, tileMap, rooms)
-                else            -> Log.warn("${m::class.simpleName} is not supported by this generator!")
-            }
-        }
+        // Apply modifiers
+        modifiers.forEach { it.modify(map, tileMap, rooms) }
     }
 
     private tailrec fun partition(

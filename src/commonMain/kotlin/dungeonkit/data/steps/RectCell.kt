@@ -4,7 +4,7 @@ import dungeonkit.data.Dimension
 import dungeonkit.data.Grid
 import dungeonkit.data.Room
 import dungeonkit.data.at
-import dungeonkit.data.steps.modifiers.Modifier
+import dungeonkit.data.steps.modifiers.RoomModifier
 import dungeonkit.data.tiles.Tile
 import dungeonkit.data.tiles.binding.TileMap
 import dungeonkit.dim
@@ -21,7 +21,7 @@ open class RectCell(
     private         val retries        : Int       = 50,
     private         val exaggeration   : Int       = 1,
     private         val floorTile      : String    = "floor",
-    override vararg val modifiers      : Modifier
+    override vararg val modifiers      : RoomModifier
 ) : ModifiableStep {
     override val status: String
         get() = "It's dangerous to go alone..."
@@ -57,6 +57,8 @@ open class RectCell(
             Path(room.center, newRoom.center).process(map, tileMap)
             retry = retries
         }
+        // Apply modifiers
+        modifiers.forEach { it.modify(map, tileMap, rooms) }
         return map
     }
 
