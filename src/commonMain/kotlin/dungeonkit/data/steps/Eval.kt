@@ -23,7 +23,7 @@ import dungeonkit.data.tiles.binding.TileMap
 class Eval(
     private val pos1: Coordinate = 0.pos,
     private val pos2: Coordinate = Int.MAX_VALUE.pos,
-    private val eval: (Int, Int, Tile) -> Tile?
+    private val eval: (x: Int, y: Int, tile: Tile) -> Tile?
 ) : Step {
     override val status: String
         get() = "Evaluating expression..."

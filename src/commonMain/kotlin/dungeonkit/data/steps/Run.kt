@@ -14,7 +14,7 @@ import dungeonkit.data.tiles.binding.TileMap
  * @constructor    Runs a function on the entire map.
  */
 class Run (
-    private val block: Grid<Tile>.(Dimension) -> Unit
+    private val block: Grid<Tile>.(dim: Dimension) -> Unit
 ) : Step {
     override val status: String
         get() = "Running..."
