@@ -19,6 +19,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertNotEquals
+
 class DungeonTests {
     init { println("Running $platform tests...") }
 
@@ -129,7 +130,10 @@ class DungeonTests {
     @Test @JsName("TestGenRectCell")
     fun `Generate Rectangle Cell map`() {
         DungeonKit.create(dimension = 100.dim, tileMap = SimpleCharTileMap)
-            .steps(RectCell(9 by 5), Trim).render(ConsoleRenderer)
+            .steps(
+                RectCell(9 by 5, roomCount = 100..100, exaggeration = 2, hallwayDistance = 2),
+                Trim
+            ).render(ConsoleRenderer)
     }
 
     @Test @JsName("TestGenDungeonTitle")
