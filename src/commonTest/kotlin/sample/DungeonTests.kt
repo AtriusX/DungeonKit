@@ -111,8 +111,7 @@ class DungeonTests {
         DungeonKit.create(dimension = 70.dim, tileMap = SimpleCharTileMap)
             .steps(Eval { x, y, _ ->
                 if (x xor y shl 2 % 2 == 0) Tiles.EXIT else Tiles.FLOOR
-            })
-            .render(ConsoleRenderer)
+            }).render(ConsoleRenderer)
     }
 
     @Test @JsName("TestGenRigidPath")
@@ -125,6 +124,12 @@ class DungeonTests {
     fun `Generate cell tree map`() {
         DungeonKit.create(dimension = 60.dim, tileMap = SimpleCharTileMap)
             .steps(CellTree, Trim).render(ConsoleRenderer)
+    }
+
+    @Test @JsName("TestGenRectCell")
+    fun `Generate Rectangle Cell map`() {
+        DungeonKit.create(dimension = 100.dim, tileMap = SimpleCharTileMap)
+            .steps(RectCell(9 by 5), Trim).render(ConsoleRenderer)
     }
 
     @Test @JsName("TestGenDungeonTitle")
