@@ -36,8 +36,8 @@ class Eval(
         }
         val (w, h) = map.area
         // Loop over the entire grid (this does a lot to ensure the range is always valid)
-        for (x in minClamp(pos1.x, pos2.x, w) until maxClamp(pos1.x, pos2.x, w))
-        for (y in minClamp(pos1.y, pos2.y, h) until maxClamp(pos1.y, pos2.y, h))
+        for (x in minClamp(pos1.x, pos2.x, w)..maxClamp(pos1.x, pos2.x, w))
+        for (y in minClamp(pos1.y, pos2.y, h)..maxClamp(pos1.y, pos2.y, h))
             // Assign all tiles according to this evaluation, or skip if null
             map[x, y] = eval(x, y, map[x, y]) ?: continue
         return map

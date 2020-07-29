@@ -106,6 +106,15 @@ class DungeonTests {
             .steps(Automaton, Trim(2), Smoothing).render(ConsoleRenderer)
     }
 
+    @Test @JsName("TestEvalCoroutines")
+    fun `Test Eval step coroutine support`() {
+        DungeonKit.create(dimension = 70.dim, tileMap = SimpleCharTileMap)
+            .steps(Eval { x, y, _ ->
+                if (x xor y shl 2 % 2 == 0) Tiles.EXIT else Tiles.FLOOR
+            })
+            .render(ConsoleRenderer)
+    }
+
     @Test @JsName("TestGenRigidPath")
     fun `Generate rigid pathway`() {
         DungeonKit.create(dimension = 50.dim, tileMap = SimpleCharTileMap)
