@@ -1,5 +1,6 @@
 package dungeonkit.data
 
+import dungeonkit.pos
 import dungeonkit.sq
 import kotlin.math.sqrt
 
@@ -87,18 +88,20 @@ data class Coordinate(
      * @param other The other coordinate to compound.
      * @return      A new coordinate at the compounded value.
      */
-    operator fun plus(other: Coordinate) = plus(other.x by other.y)
+    operator fun plus(other: Coordinate) = Coordinate(
+        x + other.x, y + other.y
+    )
+
+    operator fun plus(amount: Int) = this + amount.pos
 
     /**
      * Compounds a dimension into this coordinate. This can be used to find the coordinate for
      * the second-prime (bottom-right) corner in a dimension.
      *
-     * @param dimension The dimension to compound.
+     * @param dim The dimension to compound.
      * @return          A new coordinate at the compounded value.
      */
-    operator fun plus(dimension: Dimension) = Coordinate(
-        x + dimension.w, y + dimension.h
-    )
+    operator fun plus(dim: Dimension) = dim.run { plus(w at h) }
 
     /**
      * Deducts the value of the other coordinate from this one into a new coordinate. This can be used
@@ -110,6 +113,26 @@ data class Coordinate(
     operator fun minus(other: Coordinate) = Coordinate(
         x - other.x, y - other.y
     )
+
+    operator fun minus(amount: Int) = this - amount.pos
+
+    operator fun minus(dim: Dimension) = dim.run { minus(w at h) }
+
+    operator fun times(other: Coordinate) = Coordinate(
+        x * other.x, y * other.y
+    )
+
+    operator fun times(amount: Int) = this * amount.pos
+
+    operator fun times(dim: Dimension) = dim.run { times(w at h) }
+
+    operator fun div(other: Coordinate) = Coordinate(
+        x / other.x, y / other.y
+    )
+
+    operator fun div(amount: Int) = this / amount.pos
+
+    operator fun div(dim: Dimension) = dim.run { div(w at h) }
 
     /**
      * Determines the direction you'd need to travel to reach the [other] [Coordinate] specified.
