@@ -10,6 +10,9 @@ import dungeonkit.data.tiles.binding.TileMap
 import dungeonkit.dim
 import kotlin.random.Random
 
+/**
+ * TODO: Doc stub
+ */
 open class RectCell(
     private         val cellSize       : Dimension = 5.dim,
     private         val roomCount      : IntRange  = 6..25,

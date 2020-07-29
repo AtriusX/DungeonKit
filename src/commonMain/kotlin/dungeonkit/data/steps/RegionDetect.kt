@@ -8,6 +8,9 @@ import dungeonkit.data.tiles.binding.TileMap
 private typealias Method =
         (region: RegionDetect.Region, map: Grid<Tile>, tileMap: TileMap<*>) -> Unit
 
+/**
+ * TODO: Doc stub
+ */
 open class RegionDetect(
     private inline val method: Method = { _, _, _ -> }
 ) : Step {

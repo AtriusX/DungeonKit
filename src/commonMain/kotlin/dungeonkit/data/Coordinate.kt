@@ -92,6 +92,9 @@ data class Coordinate(
         x + other.x, y + other.y
     )
 
+    /**
+     * TODO: Doc stub
+     */
     operator fun plus(amount: Int) = this + amount.pos
 
     /**
@@ -114,24 +117,48 @@ data class Coordinate(
         x - other.x, y - other.y
     )
 
+    /**
+     * TODO: Doc stub
+     */
     operator fun minus(amount: Int) = this - amount.pos
 
+    /**
+     * TODO: Doc stub
+     */
     operator fun minus(dim: Dimension) = dim.run { minus(w at h) }
 
+    /**
+     * TODO: Doc stub
+     */
     operator fun times(other: Coordinate) = Coordinate(
         x * other.x, y * other.y
     )
 
+    /**
+     * TODO: Doc stub
+     */
     operator fun times(amount: Int) = this * amount.pos
 
+    /**
+     * TODO: Doc stub
+     */
     operator fun times(dim: Dimension) = dim.run { times(w at h) }
 
+    /**
+     * TODO: Doc stub
+     */
     operator fun div(other: Coordinate) = Coordinate(
         x / other.x, y / other.y
     )
 
+    /**
+     * TODO: Doc stub
+     */
     operator fun div(amount: Int) = this / amount.pos
 
+    /**
+     * TODO: Doc stub
+     */
     operator fun div(dim: Dimension) = dim.run { div(w at h) }
 
     /**
