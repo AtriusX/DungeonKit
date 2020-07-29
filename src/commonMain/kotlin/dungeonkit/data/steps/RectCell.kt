@@ -8,6 +8,7 @@ import dungeonkit.data.steps.modifiers.Modifier
 import dungeonkit.data.tiles.Tile
 import dungeonkit.data.tiles.binding.TileMap
 import dungeonkit.dim
+import kotlin.math.min
 import kotlin.random.Random
 
 /**
@@ -28,9 +29,9 @@ open class RectCell(
     override fun process(map: Grid<Tile>, tileMap: TileMap<*>): Grid<Tile> {
         if (map.area.h < cellSize.h || map.area.w < cellSize.w)
             throw IllegalStateException("Cannot generate cell grid in map: Too small")
-        val viableArea    = map.area - cellSize
-        val tile          = tileMap[floorTile].tile
-        val rooms         = mutableListOf(
+        val viableArea = map.area - cellSize
+        val tile       = tileMap[floorTile].tile
+        val rooms      = mutableListOf(
             Room(viableArea.random(), cellSize, tile).also { map += it.tiles }
         )
         val roomsToCreate = roomCount.random()
@@ -40,7 +41,7 @@ open class RectCell(
             if (retry < 1)
                 break
             val room  = rooms.random()
-            val index = Random.nextInt(4 * exaggeration)
+            val index = Random.nextInt(4 * min(1, exaggeration))
             // Calculate the offset coordinate vector for the generated room
             val offset = if (index % 2 == 0) (index - 1) at 0 else 0 at (index - 2)
             val pos    = room.pos + (offset * cellSize + (offset * (hallwayDistance)))
